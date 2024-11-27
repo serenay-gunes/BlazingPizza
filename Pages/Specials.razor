@@ -1,0 +1,27 @@
+@page "/specials"
+@inject HttpClient HttpClient
+
+<h1>Pizza Specials</h1>
+
+@if (specials == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var special in specials)
+        {
+            <li>@special.Name - @special.BasePrice.ToString("C")</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<PizzaSpecial> specials;
+
+    protected override async Task OnInitializedAsync()
+    {
+        specials = await HttpClient.GetFromJsonAsync<List<PizzaSpecial>>("specials");
+    }
+}

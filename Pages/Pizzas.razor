@@ -1,0 +1,52 @@
+@page "/pizzas"
+
+@using BlazingPizza.Data
+@inject PizzaService PizzaSvc
+
+<div class="pizza-container">
+    <h1 class="pizza-title">Choose your pizza</h1>
+    <p class="pizza-subtitle">We have all these delicious recipes:</p>
+
+    <div class="pizza-list">
+        @if (todaysPizzas == null || todaysPizzas.Length == 0)
+        {
+            <p>Loading pizzas...</p>
+        }
+        else
+        {
+            <table class="pizza-table">
+                <thead>
+                    <tr>
+                        <th>Pizza Name</th>
+                        <th>Description</th>
+                        <th>Vegetarian?</th>
+                        <th>Vegan?</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pizza in todaysPizzas)
+                    {
+                        <tr>
+                            <td>@pizza.Name</td>
+                            <td>@pizza.Description</td>
+                            <td>@(pizza.Vegetarian ? "Yes" : "No")</td>
+                            <td>@(pizza.Vegan ? "Yes" : "No")</td>
+                            <td>@pizza.Price.ToString("C")</td> <!-- Para birimi formatı -->
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@code {
+    private BlazingPizza.Data.Pizza[] todaysPizzas; // BlazingPizza.Data içindeki Pizza sınıfını kullanıyoruz
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Pizza servisini çağırarak veriyi alıyoruz
+        todaysPizzas = await PizzaSvc.GetPizzasAsync();
+    }
+}
